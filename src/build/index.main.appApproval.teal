@@ -1,0 +1,380 @@
+#pragma version 8
+// resource: R_Txn
+txn ApplicationID
+bz alloc
+byte base64()
+app_global_get
+dup
+int 0
+extract_uint64
+store 1 // GV_currentStep :: UInt
+int 8
+extract_uint64
+store 2 // GV_currentTime :: UInt
+byte base64(AA==)
+app_global_get
+preamble:
+pushbytess base64(dQ7kBg==) base64(1jtIug==) base64(39kjKA==)
+txna ApplicationArgs 0
+match _reachp_2 _reachp_0 _reachp_1
+errl:
+err
+_reachi_0:
+txn Sender
+store 15 // Alice/128
+load 13 // v239
+int 0
+extract_uint64
+store 16 // v238
+load 13 // v239
+int 8
+extract_uint64
+store 14 // tokenA/129
+load 13 // v239
+int 16
+extract_uint64
+store 12 // amtA/130
+load 13 // v239
+int 32
+extract_uint64
+store 11 // deadline/132
+byte base64(TX4HJw==)
+load 16 // v238
+itob
+concat
+load 14 // tokenA/129
+itob
+concat
+load 12 // amtA/130
+itob
+concat
+load 13 // v239
+extract 24 8
+concat
+load 11 // deadline/132
+itob
+concat
+log // up to 44 bytes
+// ^ log: "_reach_e0" [v238,tokenA/129,amtA/130,playerAlice/131,deadline/132] "_reach_e0(uint64,uint64,uint64,uint64,uint64)"
+load 16 // v238
+callsub l2_LF_timeCheck
+int 100000
+callsub l1_LF_mbrAdd
+int 0
+// resource: R_Asset
+load 14 // tokenA/129
+global CurrentApplicationAddress
+callsub l3_LF_makeTxn_False_False_True_True
+global Round
+load 11 // deadline/132
++
+store 13 // v147
+l4_LF_svsDump_1:
+load 15 // Alice/128
+load 14 // tokenA/129
+itob
+concat
+load 12 // amtA/130
+itob
+concat
+load 13 // v147
+itob
+concat
+int 1
+global Round
+updateStateNoOp:
+store 2 // GV_currentTime :: UInt
+store 1 // GV_currentStep :: UInt
+byte base64(AA==)
+swap
+extract 0 56
+app_global_put
+byte base64()
+load 1 // GV_currentStep :: UInt
+itob
+load 2 // GV_currentTime :: UInt
+itob
+concat
+app_global_put
+txn OnCompletion
+int NoOp
+==
+assert
+// checked on completion
+callsub l8_LF_updateMbr
+updateState:
+load 3 // GV_wasntMeth :: Bool
+bnz done
+apiReturn_noCheck:
+byte base64(FR98dQ==)
+load 4 // GV_apiRet :: Null
+concat
+log // up to 4 bytes
+done:
+int 1
+return
+_reachi_1:
+int 1
+load 1 // GV_currentStep :: UInt
+==
+assert
+callsub l5_LF_svsLoad_1
+load 11 // v242
+btoi
+store 16 // v241
+byte base64(1RUZFA==)
+load 16 // v241
+itob
+concat
+log // up to 12 bytes
+// ^ log: "_reach_e1" [v241] "_reach_e1(uint64)"
+load 16 // v241
+callsub l2_LF_timeCheck
+global Round
+load 13 // v147
+<
+assert
+load 12 // amtA/130
+load 14 // tokenA/129
+l6_LF_checkTxn_True:
+// resource: R_Txn
+txn GroupIndex
+load 0 // GV_txnCounter :: UInt
+int 1
++
+dup
+store 0 // GV_txnCounter :: UInt
+-
+dupn 3
+gtxns AssetReceiver
+global CurrentApplicationAddress
+==
+assert
+gtxns TypeEnum
+int axfer
+==
+assert
+gtxns XferAsset
+uncover 2
+==
+assert
+gtxns AssetAmount
+==
+assert
+// ^ CheckPay
+// at ./index.rsh:66:14:dot
+load 12 // amtA/130
+// resource: R_Asset
+load 14 // tokenA/129
+// resource: R_Account
+load 15 // Alice/128
+callsub l3_LF_makeTxn_False_False_True_True
+// resource: R_Account
+int 0
+load 14 // tokenA/129
+global CurrentApplicationAddress
+global CreatorAddress
+callsub l7_LF_makeTxn_False_True_True_True
+updateStateHalt:
+txn OnCompletion
+int DeleteApplication
+==
+assert
+// checked on completion
+callsub l8_LF_updateMbr
+// resource: R_Account
+int 0
+global CurrentApplicationAddress
+global CreatorAddress
+callsub l9_LF_makeTxn_False_True_False_True
+b updateState
+_reachi_2:
+int 1
+load 1 // GV_currentStep :: UInt
+==
+assert
+callsub l5_LF_svsLoad_1
+load 11 // v245
+btoi
+store 12 // v244
+byte base64(l073Fw==)
+load 12 // v244
+itob
+concat
+log // up to 12 bytes
+// ^ log: "_reach_e2" [v244] "_reach_e2(uint64)"
+load 12 // v244
+callsub l2_LF_timeCheck
+global Round
+load 13 // v147
+>=
+assert
+// resource: R_Account
+int 0
+// resource: R_Asset
+load 14 // tokenA/129
+global CurrentApplicationAddress
+global CreatorAddress
+callsub l7_LF_makeTxn_False_True_True_True
+b updateStateHalt
+_reachp_0:
+callsub l0_LF_wasntMeth
+int 100000
+callsub l1_LF_mbrAdd
+txna ApplicationArgs 1
+store 13 // v239
+b _reachi_0
+_reachp_1:
+callsub l0_LF_wasntMeth
+txna ApplicationArgs 1
+store 11 // v242
+b _reachi_1
+_reachp_2:
+callsub l0_LF_wasntMeth
+txna ApplicationArgs 1
+store 11 // v245
+b _reachi_2
+alloc:
+int 0
+txn GlobalNumUint
+==
+assert
+int 2
+txn GlobalNumByteSlice
+==
+assert
+int 0
+txn LocalNumUint
+==
+assert
+int 0
+txn LocalNumByteSlice
+==
+assert
+callsub l0_LF_wasntMeth
+int 56
+bzero
+int 0
+int 0
+b updateStateNoOp
+apiReturn_check:
+txn OnCompletion
+int NoOp
+==
+assert
+// checked on completion
+b apiReturn_noCheck
+l10_LF_makeTxnK_True_True:
+int 0
+itxn_field Fee
+int axfer
+itxn_field TypeEnum
+itxn_field AssetReceiver
+itxn_field XferAsset
+itxn_field AssetAmount
+itxn_submit
+retsub
+l11_LF_makeTxnK_False_True:
+int 0
+itxn_field Fee
+int pay
+itxn_field TypeEnum
+itxn_field Receiver
+itxn_field Amount
+itxn_submit
+retsub
+updateMbr_eq:
+pop
+retsub
+updateMbr_neg:
+swap
+-
+dup
+store 6 // GV_mbrAdd :: UInt
+global CreatorAddress
+callsub l13_LF_makeTxn_False_False_False_True
+retsub
+updateMbr_pos_eq:
+-
+dup
+bz updateMbr_eq
+dup
+store 6 // GV_mbrAdd :: UInt
+l12_LF_checkTxn_False:
+// resource: R_Txn
+txn GroupIndex
+load 0 // GV_txnCounter :: UInt
+int 1
++
+dup
+store 0 // GV_txnCounter :: UInt
+-
+dupn 2
+gtxns Receiver
+global CurrentApplicationAddress
+==
+assert
+gtxns TypeEnum
+int pay
+==
+assert
+gtxns Amount
+==
+assert
+retsub
+l0_LF_wasntMeth:
+int 1
+store 3 // GV_wasntMeth :: Bool
+retsub
+l2_LF_timeCheck:
+dup
+int 0
+==
+swap
+load 2 // GV_currentTime :: UInt
+==
+||
+assert
+retsub
+l8_LF_updateMbr:
+load 6 // GV_mbrAdd :: UInt
+load 7 // GV_mbrSub :: UInt
+dup2
+>=
+bz updateMbr_neg
+b updateMbr_pos_eq
+l7_LF_makeTxn_False_True_True_True:
+itxn_begin
+itxn_field AssetCloseTo
+b l10_LF_makeTxnK_True_True
+l5_LF_svsLoad_1:
+dup
+extract 0 32
+store 15 // Alice/128
+dup
+int 32
+extract_uint64
+store 14 // tokenA/129
+dup
+int 40
+extract_uint64
+store 12 // amtA/130
+int 48
+extract_uint64
+store 13 // v147
+retsub
+l3_LF_makeTxn_False_False_True_True:
+itxn_begin
+b l10_LF_makeTxnK_True_True
+l1_LF_mbrAdd:
+load 6 // GV_mbrAdd :: UInt
++
+store 6 // GV_mbrAdd :: UInt
+retsub
+l9_LF_makeTxn_False_True_False_True:
+itxn_begin
+itxn_field CloseRemainderTo
+b l11_LF_makeTxnK_False_True
+l13_LF_makeTxn_False_False_False_True:
+itxn_begin
+b l11_LF_makeTxnK_False_True
