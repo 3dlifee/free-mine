@@ -3,15 +3,17 @@ import Phaser from "phaser";
 import { loadStdlib } from "@reach-sh/stdlib";
 // Env file value
 import { valueKey } from "../App.js";
-// Rand Labs MyAlgo Connect Javascript library
-import MyAlgoConnect from "@randlabs/myalgo-connect";
+//PeraConnect package to sign transactions
+import { PeraWalletConnect } from "@perawallet/connect";
+//For signing transactions to work we need to use a custom wrapper for PeraConnect package
+import MakePeraConnect from "../PeraWallet-wrapper.ts";
 // Loading the Standard Library
 const stdlib = loadStdlib("ALGO");
 
 stdlib.setWalletFallback(
   stdlib.walletFallback({
     providerEnv: "MainNet",
-    MyAlgoConnect,
+    WalletConnect: MakePeraConnect(PeraWalletConnect),
   })
 );
 
@@ -137,7 +139,7 @@ function buttonsState() {
 async function payWithAlgoorToken() {
   insertCoin.destroy();
   // amount to play
-  const MICROALGOS = "100000";
+  const MICROALGOS = "10";
   const Tokens = "500000000";
   //  Player connects is account
   const accAlice = await stdlib.getDefaultAccount();
@@ -173,5 +175,5 @@ async function payWithAlgoorToken() {
   alert("Game Funded!");
   //  the player can play the game
   playButton.setVisible(true);
-  playGamestatus = true;
+  playGamestatus = false;
 }
